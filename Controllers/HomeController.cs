@@ -9,30 +9,19 @@ namespace WebApplication1.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+
         private readonly DatabaseContext _databaseContext;
 
-        public HomeController(ILogger<HomeController> logger, DatabaseContext databaseContext)
+        public HomeController(ILogger<HomeController> logger/*, DatabaseContext databaseContext*/)
         {
             _logger = logger;
-            _databaseContext = databaseContext;
+            //_databaseContext = databaseContext;
         }
 
-        public IActionResult Index()
+        public IActionResult Index([FromServices] DatabaseContext databaseContext)
         {
             // TODO : Set database context
-            List<Album> albums = new List<Album>();
-
-            for (int i = 0; i < 10; i++)
-            {
-                albums.Add(new Album
-                {
-                    Id = i,
-                    Name = NameData.GetCompanyName(),
-                    Description = TextData.GetSentence()
-                });
-            }
-
-            return View(albums);
+            return View(databaseContext.Albums.ToList());
         }
 
         public string ImportData([FromServices] DatabaseContext databaseContext)
@@ -42,8 +31,7 @@ namespace WebApplication1.Controllers
             for (int i = 0; i < 10; i++)
             {
                 databaseContext.Albums.Add(new Album
-                {
-                    Id = i,
+                {                    
                     Name = NameData.GetCompanyName(),
                     Description = TextData.GetSentence()
                 });
